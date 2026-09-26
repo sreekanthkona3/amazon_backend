@@ -6,9 +6,33 @@ frontend:
         - npm ci
     build:
       commands:
-        - echo "build done"
+        - mkdir -p .amplify-hosting/compute/default
+        - cp server.js package.json .amplify-hosting/compute/default/
+        - cp -r node_modules .amplify-hosting/compute/default/ || true
+        - |
+          cat > .amplify-hosting/deploy-manifest.json << 'EOF'
+          {
+            "version": 1,
+            "routes": [
+              {
+                "path": "/*",
+                "target": {
+                  "kind": "Compute",
+                  "src": "default"
+                }
+              }
+            ],
+            "computeResources": [
+              {
+                "name": "default",
+                "runtime": "nodejs20.x",
+                "entrypoint": "server.js"
+              }
+            ]
+          }
+          EOF
   artifacts:
-    baseDirectory: .
+    baseDirectory: .amplify-hosting
     files:
       - '**/*'
   cache:
