@@ -3,14 +3,14 @@ frontend:
   phases:
     preBuild:
       commands:
-        - npm ci
+                - npm ci
     build:
       commands:
-        - echo "build done"
+                - npm run build --if-present
   artifacts:
     baseDirectory: .
     files:
-      - '**/*'
+            - '**/*'
   cache:
     paths:
-      - node_modules/**/*
+            - node_modules/**/*
