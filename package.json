@@ -6,7 +6,7 @@
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
     "start": "node server.js",
-    "build":"echo 'no frontend build'"
+    "build":"npm ci"
   },
   "repository": {
     "type": "git",
