@@ -3,39 +3,17 @@ frontend:
   phases:
     preBuild:
       commands:
-                - npm ci
+        - npm ci
     build:
       commands:
-        - npm run build --if-present
         - mkdir -p .amplify-hosting/compute/default
         - cp server.js package.json .amplify-hosting/compute/default/
-        - cp -r node_modules .amplify-hosting/compute/default/ || true
-        - |
-          cat > .amplify-hosting/deploy-manifest.json << 'EOF'
-          {
-            "version": 1,
-            "routes": [
-              {
-                "path": "/*",
-                "target": {
-                  "kind": "Compute",
-                  "src": "default"
-                }
-              }
-            ],
-            "computeResources": [
-              {
-                "name": "default",
-                "runtime": "nodejs20.x",
-                "entrypoint": "server.js"
-              }
-            ]
-          }
-          EOF
+        - cp -r node_modules .amplify-hosting/compute/default/ 2>/dev/null || true
+        - node -e "require('fs').writeFileSync('.amplify-hosting/deploy-manifest.json', JSON.stringify({version:1,routes:[{path:'/*',target:{kind:'Compute',src:'default'}}],computeResources:[{name:'default',runtime:'nodejs18.x',entrypoint:'server.js'}]}))"
   artifacts:
     baseDirectory: .amplify-hosting
     files:
-            - '**/*'
+      - '**/*'
   cache:
     paths:
-            - node_modules/**/*
+      - node_modules/**/*
